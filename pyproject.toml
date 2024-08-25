@@ -1,0 +1,42 @@
+[tool.poetry]
+name = "asyncpg-with-fastapi-and-celery"
+version = "0.0.1"
+description = "A project to understand SQLAlchemy 2.0 ORM with Northwind database"
+authors = ["Eduardo Rezaghi <eduardo.rezaghi@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.12"
+sqlalchemy = {extras = ["asyncio"], version = "^2.0.32"}
+asyncpg = "^0.29.0"
+psycopg = {extras = ["binary", "pool"], version = "^3.2.1"}
+
+[tool.poetry.group.api]
+optional = true
+[tool.poetry.group.api.dependencies]
+fastapi = "^0.112.2"
+uvicorn = {extras = ["standard"], version = "^0.30.6"}
+
+[tool.poetry.group.worker]
+optional = true
+[tool.poetry.group.worker.dependencies]
+celery = "^5.4.0"
+redis = "^5.0.8"
+
+
+[tool.poetry.group.dev]
+optional = true
+[tool.poetry.group.dev.dependencies]
+black = "^24.8.0"
+isort = "^5.13.2"
+mypy = "^1.11.2"
+pytest = "^8.3.2"
+pytest-celery = "^1.1.1"
+pytest-asyncio = "^0.24.0"
+httpx = "^0.27.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
