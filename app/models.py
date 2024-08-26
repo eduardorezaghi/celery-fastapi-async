@@ -20,4 +20,7 @@ class Product(Base):
 
     category = relationship("Category", back_populates="products")
 
+    def __repr__(self) -> str:
+        return f"<Product(product_name={self.product_name}, unit_price={self.unit_price})>"
+
 Category.products = relationship("Product", back_populates="category")
