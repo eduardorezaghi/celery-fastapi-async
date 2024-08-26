@@ -1,8 +1,20 @@
-from celery import Celery
+from typing import Any
+import celery.utils
 
-app = Celery('tasks', broker='pyamqp://guest@localhost//', backend='redis://localhost')
+from app import celery_app
 
-@app.task
-def add_product(name, category_id, price):
+
+@celery_app.task(bind=True) # type: ignore
+def add_product(
+    self: celery.Task,
+    name: str,
+    description: str,
+    category_id: int,
+    price: float,
+) -> None:
     # Implement logic to add a product to the database
-    pass
+    ...
+
+@celery_app.task(bind=True) # type: ignore
+def noop(*args: list, **kwargs: dict) -> celery.utils.noop:
+    return celery.utils.noop(*args, **kwargs)
