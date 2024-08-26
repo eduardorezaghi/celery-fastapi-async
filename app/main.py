@@ -1,18 +1,14 @@
 from fastapi import FastAPI
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import sessionmaker
 
-from models import Base
-from tasks import add_product
+from app import engine
+from app.models import Base, Product
+from app.tasks import add_product
 
 app = FastAPI()
 
-DATABASE_URL = "postgresql+asyncpg://user:password@localhost/northwind"
-engine = create_async_engine(DATABASE_URL, echo=True)
-AsyncSessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 @app.on_event("startup")
-async def startup():
+async def startup() -> None:
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
