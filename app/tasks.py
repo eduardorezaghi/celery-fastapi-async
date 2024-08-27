@@ -1,10 +1,9 @@
-from typing import Any
 import celery.utils
 
-from app import celery_app
+from app.celery import celery_app
 
 
-@celery_app.task(bind=True) # type: ignore
+@celery_app.task(bind=True)  # type: ignore
 def add_product(
     self: celery.Task,
     name: str,
@@ -15,6 +14,7 @@ def add_product(
     # Implement logic to add a product to the database
     ...
 
-@celery_app.task(bind=True) # type: ignore
+
+@celery_app.task(bind=True)  # type: ignore
 def noop(*args: list, **kwargs: dict) -> celery.utils.noop:
     return celery.utils.noop(*args, **kwargs)
