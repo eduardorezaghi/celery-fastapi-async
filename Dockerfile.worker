@@ -1,14 +1,23 @@
 FROM python:3.12-slim
 
-WORKDIR /app
+ARG CELERY_LOG_LEVEL=INFO
+ARG CELERY_WORKER_NAME=my_worker
+ARG CELERY_WORKER_QUEUE=celery
+ENV LOG_LEVEL=$CELERY_LOG_LEVEL
+ENV WORKER_NAME=$CELERY_WORKER_NAME
+ENV WORKER_QUEUE=$CELERY_WORKER_QUEUE
+
+EXPOSE 5678
+
+WORKDIR /myapp
 
 RUN pip install poetry
 
-COPY pyproject.toml poetry.lock* /app/
+COPY pyproject.toml poetry.lock* /myapp/
 
 RUN poetry config virtualenvs.create false \
   && poetry install --no-interaction --no-ansi --only main,worker
 
-COPY . /app
+COPY ./app /myapp/app
 
-CMD ["celery", "-A", "app.tasks", "worker"]
+CMD ["celery", "-A", "app.tasks", "worker", "--loglevel=$LOG_LEVEL", "-n", "$WORKER_NAME@%h", "-Q", "$WORKER_QUEUE"]
